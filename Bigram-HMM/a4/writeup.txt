@@ -1,0 +1,47 @@
+1. 
+hmm: 
+TAGGING ACCURACY BY TOKEN: 21971.0/25097 = 87.5%   OOV TOKENS: 634.0/2292.0 = 27.7%   PERFECT SENTENCES: 760/2077 = 36.6%   #P_HMM(GOLD)>P_HMM(PRED): 14   #P_HMM(GOLD)<P_HMM(PRED): 1303
+baseline:
+TAGGING ACCURACY BY TOKEN: 21502.0/25097 = 85.7%   OOV TOKENS: 711.0/2292.0 = 31.0%   PERFECT SENTENCES: 597/2077 = 28.7%   #P_HMM(GOLD)>P_HMM(PRED): 1094   #P_HMM(GOLD)<P_HMM(PRED): 386
+
+2.
+(753, 'PROPN'), (708, 'NOUN') are the Top most frequently tagged incorrectly by using HMM. 
+Proper noun can be miss predeict because proper nouns can be construct by all kinds of tags, can be VERB, NOUN, ADJ...etc. Ex. United States, united can be PROPN or ADJ, and States can be PROPN, NOUN or VERB.
+Noun is also the one of the tag been tagged incorrectly the most, the reason can be a lot of phares the VERB and NOUN is the same word such as, love, this word is the same for VERB and NOUN.
+
+3.
+14 of #P_HMM(GOLD)>P_HMM(PRED) 
+-48.4892567495997 hopefully/ADV she/PRON does/AUX n't/PART hose/VERB you/PRON ./PUNCT
+-49.50519638648035 hopefully/ADV she/PRON does/AUX n't/PART hose/NOUN you/PRON ./PUNCT 86%
+When predicting if this word is in the training set, we only iterate the tags that has been seen in training data. If we try all the tags when predicting not the tags related to the words, the #P_HMM(GOLD)>P_HMM(PRED) will be 0. 
+In the case above the different probabilities between two sentence are (hose/VERB is unknown)
+ - the transition prob from the word "n't" to "hose" and "hose" to "you":
+ 	- GOLD:PART to VERB: -0.34266155228384937 VERB to PRON: -1.7733505245134495
+ 	- PRED:PART to NOUN: -2.556259869565278 NOUN to PRON: -3.2039904274390363
+ - the emission prob for the word "hose":   
+ 	- GOLD hose/VERB: -12.36604633866022
+ 	- PRED hose/NOUN: -9.737747755333851 
+ 	GOLD total: -14.48205841545752 ;PRED total: -15.497998052338165
+GOLD > PRED
+
+4.
+hmm:
+TAGGING ACCURACY BY TOKEN: 21556.0/25097 = 85.9%   OOV TOKENS: 190.0/2292.0 = 8.3%   PERFECT SENTENCES: 645/2077 = 31.1%   #P_HMM(GOLD)>P_HMM(PRED): 24   #P_HMM(GOLD)<P_HMM(PRED): 1408
+baseline:
+TAGGING ACCURACY BY TOKEN: 21018.0/25097 = 83.7%   OOV TOKENS: 510.0/2292.0 = 22.3%   PERFECT SENTENCES: 524/2077 = 25.2%   #P_HMM(GOLD)>P_HMM(PRED): 1249   #P_HMM(GOLD)<P_HMM(PRED): 304
+the Accuracy are 85.7% for hmm and 83.8% for baseline. The Penn-tagged dataset is lower than the Universal tagset for both model.
+The reason can be Penn-tagset owns more P.O.S tags than Univeral tagset. Althouth the same sentence in both training data, Penn-tag have 50 tags while Univeral tagset only have 17 tags.
+
+5.
+	Penn-tag:
+baseline: 	RUNTIME: TRAINING = 2.1s, TAGGING = 0.14s
+hmm: 		RUNTIME: TRAINING = 2.0s, TAGGING = 2.7s
+	Universal tagset:
+baseline: 	RUNTIME: TRAINING = 2.8s, TAGGING = 0.14s
+hmm: 		RUNTIME: TRAINING = 2.7s, TAGGING = 0.92s
+In the most case training time takes more than tagging, only when hmm on the Penn-tag set the tagging is higher than training time.
+The reason can be Penn-tag is more complicate POS tag resulting a bigger transition and emission table which takes more time to run.
+
+6. 
+If increase the training data, the training time will definitely be longer.
+For the tagging time it depends on the test dataset, the Penn-tag POS tag system is more complicate compare to Universal tagset which leads to more time to iterate though the transition and emission table also means longer runtime for the hmm model.
